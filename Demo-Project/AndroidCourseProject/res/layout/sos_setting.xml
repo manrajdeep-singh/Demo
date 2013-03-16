@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/phoneCallContactText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SOS Phone call contact"
+        android:textColor="#00FFFF"
+        android:textStyle="bold"
+		android:textSize="30dp"/>
+
+
+    <Button
+        android:id="@+id/btnPickPhoneCallContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick 2 Contacts" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="125dp" >
+        
+        <ListView android:layout_width="match_parent"
+              android:text="@+id/selectedPhoneContactEntryText"
+              android:id="@+id/selectedContactList"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+        
+    </FrameLayout>
+ 
+    <TextView
+        android:id="@+id/smsContactText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SOS SMS contact"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/btnPickSMSContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pick 2 Contacts" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="125dp" >
+        
+        <ListView android:layout_width="match_parent"
+              android:text="@+id/selectedSMSContactEntryText"
+              android:id="@+id/selectedSMSContactList"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"/>
+        
+    </FrameLayout>
+     -->
+</LinearLayout>

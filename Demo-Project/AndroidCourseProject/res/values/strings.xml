@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Hello World, Alive Counter</string>
+    <string name="contact_manager">All Contacts</string>
+    <string name="sos_setting">Configuration</string>
+    <string name="alert_manager">Alert Manager</string>
+    
+</resources>
