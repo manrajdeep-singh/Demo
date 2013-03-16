@@ -154,8 +154,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    return contact;
 	  }
 
-	  private static boolean doesDatabaseExist(ContextWrapper context, String dbName) {
-		    File dbFile=context.getDatabasePath(dbName);
-		    return dbFile.exists();
-		}
 }
