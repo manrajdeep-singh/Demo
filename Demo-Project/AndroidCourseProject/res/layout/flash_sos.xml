@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <GridLayout
+        android:id="@+id/sos_flash_background"
+        android:layout_width="240dp"
+        android:layout_height="140dp"
+        android:layout_x="33dp"
+        android:layout_y="22dp"
+        android:background="@color/white"
+        android:animateLayoutChanges="false" >
+
+    </GridLayout>
+
+    <Button
+        android:id="@+id/stopTone"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="94dp"
+        android:layout_height="wrap_content"
+        android:layout_x="43dp"
+        android:layout_y="198dp"
+        android:text="Stop Tone" />
+
+    <Button
+        android:id="@+id/goback"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="94dp"
+        android:layout_height="wrap_content"
+        android:layout_x="170dp"
+        android:layout_y="198dp"
+        android:text="Go Back" />
+    
+</AbsoluteLayout>
