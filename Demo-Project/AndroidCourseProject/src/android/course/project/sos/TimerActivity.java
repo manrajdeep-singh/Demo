@@ -22,7 +22,7 @@ public class TimerActivity extends Activity {
     private TextView mTimerLabel;
     
     // in seconds
-    private int TIME_TO_WAIT = 10;
+    private int TIME_TO_WAIT = 5;
     // Handler to handle the message to the timer task
     private Handler mHandler = new Handler();
            
@@ -81,11 +81,13 @@ public class TimerActivity extends Activity {
 				Toast.makeText(TimerActivity.this, "Time to wait exceeded the given limit",
 	                    Toast.LENGTH_SHORT).show();
 //				launchContactManager();
-				launchEmergencyCallManager();
+//				launchEmergencyCallManager();
+				launchAlertActivity();
 				
 			}
 			
-		} 	
+		}
+
     }; 
     
     private void stopTimer(){
@@ -118,5 +120,14 @@ public class TimerActivity extends Activity {
     	Intent intent = new Intent(this, SosSettingActivity.class);
     	startActivity(intent);		 
     }
+
+    /**
+     * Launches the Alert activity .
+     */
+    private void launchAlertActivity() {
+    	Intent intent = new Intent(this, AlertActivity.class);
+    	startActivity(intent);		 
+		
+	} 	
     
 } 
