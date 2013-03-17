@@ -22,10 +22,16 @@ public final class SosSettingActivity extends Activity {
 	private HashMap<String,Contact> selectedContact;
 	static final int PICK_CONTACT_REQUEST = 1;  // The request code
 	private DatabaseHelper dbHelper;
+	private ListView phoneCallListview;
+	private ListView phoneSMSListview;
+	
+	private ArrayAdapter<Contact> phoneCallAdapter;
+	private ArrayAdapter<Contact> phoneSMSAdapter;
+
+	// TODO Find better way to handle boolean settings
+	private boolean sendEmail = false;
 	private boolean phoneCall = false;
 	private boolean phonesms = false;
-	private ListView listview;
-	private ArrayAdapter<Contact> adapter;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -36,25 +42,29 @@ public final class SosSettingActivity extends Activity {
         
         dbHelper=new DatabaseHelper(this);
 
-        List<Contact> values = dbHelper.getAllContacts();
+//        List<Contact> values = dbHelper.getAllContacts();
 
-        // handles selected contact UI
-        listview = (ListView)findViewById(R.id.selectedContactList); 
+        // handles Phone Call Selected contact UI
+        phoneCallListview = (ListView)findViewById(R.id.selectedContactList); 
      // Set our custom array adapter as the ListView's adapter.
-        adapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, values);
-//        adapter = new ArrayAdapter<Contact>(this,R.id.selectedPhoneContactEntryText, values);
-        listview.setAdapter(adapter);				
+        phoneCallAdapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, dbHelper.getAllPhoneCallContacts());
+        phoneCallListview.setAdapter(phoneCallAdapter);				
+      
+        // handles Phone Call Selected contact UI
+        phoneSMSListview = (ListView)findViewById(R.id.selectedSMSContactList); 
+     // Set our custom array adapter as the ListView's adapter.
+        phoneSMSAdapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, dbHelper.getAllPhoneSMSContacts());
+        phoneSMSListview.setAdapter(phoneSMSAdapter);				
+      
         
         Button pickPhoneCallButton = (Button) findViewById(R.id.btnPickPhoneCallContact);       
         pickPhoneCallButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View view){
-				phoneCall  =true;
-				phonesms  =false;
-				Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
-        		startActivityForResult(intent, PICK_CONTACT_REQUEST);
-        		
-
+				phoneCall = true;
+				phonesms  = false;
+				sendEmail = false;
+				initiatePickContact();
         	}
         });
         
@@ -63,6 +73,8 @@ public final class SosSettingActivity extends Activity {
 			public void onClick(View view){
 				phoneCall = false;
 				phonesms  = true;
+				sendEmail = false;
+				initiatePickContact();
         	}
         });
         
@@ -71,7 +83,6 @@ public final class SosSettingActivity extends Activity {
 	@Override
 	public void onActivityResult(int reqCode, int resultCode, Intent data) {
 		super.onActivityResult(reqCode, resultCode, data);
-//		ArrayAdapter<Contact> adapter = (ArrayAdapter<Contact>) getListAdapter();
 		switch (reqCode) {
 		case (PICK_CONTACT_REQUEST):
 			if (resultCode == Activity.RESULT_OK) {
@@ -85,6 +96,7 @@ public final class SosSettingActivity extends Activity {
 				Cursor c = getContentResolver().query(contactData, projection, null, null, sortOrder);
 				if (c.moveToFirst()) {
 					String phoneNumber  = "";
+					String emailAddress = "";
 					Contact selected = new Contact();
 					selected.setID(c.getString(c.getColumnIndexOrThrow(ContactsContract.Data._ID)));
 					selected.setName(c.getString(c.getColumnIndexOrThrow(ContactsContract.Data.DISPLAY_NAME)));
@@ -93,14 +105,29 @@ public final class SosSettingActivity extends Activity {
 		                Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ selected.getID(),null, null); 
 		                while (phones.moveToNext()) { 
 		                	phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-		                    if (phoneNumber.length() > 0)
+		                	if (phoneNumber.length() > 0)
 		                    	break;
 		                } 
 		                phones.close(); 
+		                
+		                // Do same to get email
+		                Cursor email = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,ContactsContract.CommonDataKinds.Email.CONTACT_ID +" = "+ selected.getID(),null, null); 
+		                while (email.moveToNext()) { 
+		                    emailAddress = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS));
+		                    if (emailAddress.length() > 0)
+		                    	break;
+		                } 
+		                email.close(); 
+
 		            }
 		            selected.setPhoneNumber(phoneNumber);
+		            selected.setEmail(emailAddress);
+		            
+		            // TODO Find better way to set boolean flags (based on button click)
 		            selected.setPhone(phoneCall);
 		            selected.setSms(phonesms);
+		            selected.setEmail(sendEmail);
+		            
 		            dbHelper.addContact(selected);
 					selectedContact.put(selected.getID(), selected);
 				}
@@ -108,8 +135,13 @@ public final class SosSettingActivity extends Activity {
 			
 			break;
 		}
-		adapter.notifyDataSetChanged();
+		phoneCallAdapter.notifyDataSetChanged();
 	}
 	
+	private void initiatePickContact(){
+		Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
+		startActivityForResult(intent, PICK_CONTACT_REQUEST);
+
+	}
 
 }

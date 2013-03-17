@@ -87,24 +87,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	Cursor getAllPhoneCallContact()
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
-		Cursor cur= db.rawQuery("SELECT * FROM "+contactTable+" where "+colisPhone+" = 1",null);
-		return cur;
+//		Cursor cur= db.rawQuery("SELECT * FROM "+contactTable+" where "+colisPhone+" = 1",null);
+		String[] args = { "1" };
+		Cursor cursor = db.query(contactTable, allColumns, colisPhone + " = ?", args, null,null,colName);
+		return cursor;
 
 	}
 
 	Cursor getAllSMSContact()
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
-		Cursor cur= db.rawQuery("SELECT * FROM "+contactTable+" where "+colisSms+" = 1",null);
-		return cur;
-
+		String[] args = { "1" };
+		Cursor cursor = db.query(contactTable, allColumns, colisSms + " = ?", args, null,null,colName);
+		return cursor;
 	}
 
 	Cursor getAllEmailContact()
 	{
 		SQLiteDatabase db=this.getWritableDatabase();
-		Cursor cur= db.rawQuery("SELECT * FROM "+contactTable+" where "+colisEmail+" = 1",null);
-		return cur;
+		String[] args = { "1" };
+		Cursor cursor = db.query(contactTable, allColumns, colisEmail + " = ?", args, null,null,colName);
+		return cursor;
 
 	}
 
@@ -141,17 +144,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	    cursor.close();
 	    return contacts;
 	  }
+	
+	List<Contact> iterateOverCursor(Cursor cursor) {
+		List<Contact> contacts = new ArrayList<Contact>();
+		cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+	       Contact contact = cursorToContact(cursor);
+	      contacts.add(contact);
+	      cursor.moveToNext();
+	    }
 
+	    cursor.close();
+	    return contacts;		
+	}
+
+	/**
+	 *   colID,
+	 *   colName,
+	 *   colPhone,
+	 *	 colEmail,
+     * 	 colisSms,
+	 *   colisPhone,
+	 *	 colisEmail
+	 * @param cursor
+	 * @return
+	 */
 	  Contact cursorToContact(Cursor cursor) {
 		Contact contact = new Contact();
 		contact.setID(cursor.getString(0));
 		contact.setName(cursor.getString(1));
 		contact.setPhoneNumber(cursor.getString(2));
-		contact.setSms(cursor.getInt(3) == 1 ? true : false); // is sms
-		contact.setPhone(cursor.getInt(4) == 1 ? true : false); // is phone
-		contact.setEmail(cursor.getInt(5) == 1 ? true : false); // is email
+		contact.setEmail(cursor.getString(3));
+		contact.setSms(cursor.getInt(4) == 1 ? true : false); // is sms
+		contact.setPhone(cursor.getInt(5) == 1 ? true : false); // is phone
+		contact.setEmail(cursor.getInt(6) == 1 ? true : false); // is email
 		
 	    return contact;
+	  }
+	  
+	  public List<Contact> getAllPhoneCallContacts() {
+		  return iterateOverCursor(this.getAllPhoneCallContact());
+	  }
+	  public List<Contact> getAllPhoneSMSContacts() {
+		  return iterateOverCursor(this.getAllSMSContact());
+	  }
+	  public List<Contact> getAllEmailContacts() {
+		  return iterateOverCursor(this.getAllEmailContact());
 	  }
 
 }
