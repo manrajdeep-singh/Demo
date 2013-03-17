@@ -29,7 +29,6 @@
         android:layout_height="125dp" >
         
         <ListView android:layout_width="match_parent"
-              android:text="@+id/selectedPhoneContactEntryText"
               android:id="@+id/selectedContactList"
               android:layout_height="wrap_content"
               android:layout_weight="1"/>
@@ -58,7 +57,6 @@
         android:layout_height="125dp" >
         
         <ListView android:layout_width="match_parent"
-              android:text="@+id/selectedSMSContactEntryText"
               android:id="@+id/selectedSMSContactList"
               android:layout_height="wrap_content"
               android:layout_weight="1"/>

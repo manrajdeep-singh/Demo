@@ -8,12 +8,15 @@ public class ContactView {
     private TextView textView ;
     
     public ContactView() {
-    	
+
     }
-    
+    public ContactView( TextView textView) {
+    	this.textView = textView ;
+    }
+
     public ContactView( TextView textView, CheckBox checkBox ) {
-      this.checkBox = checkBox ;
-      this.textView = textView ;
+    	this.checkBox = checkBox ;
+    	this.textView = textView ;
     }
     public CheckBox getCheckBox() {
       return checkBox;

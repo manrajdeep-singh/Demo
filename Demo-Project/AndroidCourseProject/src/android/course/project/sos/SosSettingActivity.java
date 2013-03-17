@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.content.Intent;
 import android.course.project.sos.domain.Contact;
+import android.course.project.sos.utility.CustomContactArrayAdapter;
 import android.course.project.sos.utility.DatabaseHelper;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public final class SosSettingActivity extends Activity {
 
@@ -26,7 +25,8 @@ public final class SosSettingActivity extends Activity {
 	private boolean phoneCall = false;
 	private boolean phonesms = false;
 	private ListView listview;
-	private ArrayAdapter<Contact> adapter; 
+	private ArrayAdapter<Contact> adapter;
+	private CustomContactArrayAdapter listAdapter; 
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -39,8 +39,12 @@ public final class SosSettingActivity extends Activity {
 
         List<Contact> values = dbHelper.getAllContacts();
 
+        // handles selected contact UI
         listview = (ListView)findViewById(R.id.selectedContactList); 
-        adapter = new ArrayAdapter<Contact>(this,android.R.layout.simple_list_item_1, values);
+     // Set our custom array adapter as the ListView's adapter.
+        adapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, values);
+       
+//        adapter = new ArrayAdapter<Contact>(this,R.id.selectedPhoneContactEntryText, values);
         listview.setAdapter(adapter);				
         
         Button pickPhoneCallButton = (Button) findViewById(R.id.btnPickPhoneCallContact);       
