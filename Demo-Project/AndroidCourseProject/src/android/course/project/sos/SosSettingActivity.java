@@ -15,15 +15,18 @@ import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public final class SosSettingActivity extends ListActivity {
+public final class SosSettingActivity extends Activity {
 
 	private HashMap<String,Contact> selectedContact;
 	static final int PICK_CONTACT_REQUEST = 1;  // The request code
 	private DatabaseHelper dbHelper;
 	private boolean phoneCall = false;
 	private boolean phonesms = false;
+	private ListView listview;
+	private ArrayAdapter<Contact> adapter; 
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -36,18 +39,17 @@ public final class SosSettingActivity extends ListActivity {
 
         List<Contact> values = dbHelper.getAllContacts();
 
-
-        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this,android.R.layout.simple_list_item_1, values);
-		setListAdapter(adapter);				
+        listview = (ListView)findViewById(R.id.selectedContactList); 
+        adapter = new ArrayAdapter<Contact>(this,android.R.layout.simple_list_item_1, values);
+        listview.setAdapter(adapter);				
         
         Button pickPhoneCallButton = (Button) findViewById(R.id.btnPickPhoneCallContact);       
         pickPhoneCallButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View view){
-//				phoneCall  =true;
-//				phonesms  =false;
+				phoneCall  =true;
+				phonesms  =false;
 				Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
-//                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
         		startActivityForResult(intent, PICK_CONTACT_REQUEST);
         		
 
@@ -75,6 +77,7 @@ public final class SosSettingActivity extends ListActivity {
 		        String[] projection = new String[] {
 		                ContactsContract.Contacts._ID,
 		                ContactsContract.Contacts.DISPLAY_NAME,
+		                ContactsContract.Contacts.HAS_PHONE_NUMBER
 		        };
 		        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 				Cursor c = getContentResolver().query(contactData, projection, null, null, sortOrder);
@@ -103,7 +106,7 @@ public final class SosSettingActivity extends ListActivity {
 			
 			break;
 		}
-//		adapter.notifyDataSetChanged();
+		adapter.notifyDataSetChanged();
 	}
 	
 
