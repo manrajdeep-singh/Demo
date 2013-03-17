@@ -5,5 +5,8 @@
     <string name="contact_manager">All Contacts</string>
     <string name="sos_setting">Configuration</string>
     <string name="alert_manager">Alert Manager</string>
+    <color name="white">#FFFFFF</color>
+    <string name="alert_subject">SOS...</string>
+    <string name="alert_message">SOS Message</string>
     
 </resources>
