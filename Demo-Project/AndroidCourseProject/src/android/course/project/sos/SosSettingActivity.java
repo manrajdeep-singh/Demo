@@ -17,9 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-public final class SosSettingActivity extends Activity {
+public final class SosSettingActivity extends ListActivity {
 
-	private TextView sosPhoneCallLabel;
 	private HashMap<String,Contact> selectedContact;
 	static final int PICK_CONTACT_REQUEST = 1;  // The request code
 	private DatabaseHelper dbHelper;
@@ -32,15 +31,14 @@ public final class SosSettingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sos_setting);
         selectedContact = new HashMap<String,Contact>();
-//        sosPhoneCallLabel = (TextView) findViewById(R.id.textTimer);
         
         dbHelper=new DatabaseHelper(this);
 
         List<Contact> values = dbHelper.getAllContacts();
 
 
-//        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this,android.R.layout.simple_list_item_1, values);
-//		setListAdapter(adapter);				
+        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(this,android.R.layout.simple_list_item_1, values);
+		setListAdapter(adapter);				
         
         Button pickPhoneCallButton = (Button) findViewById(R.id.btnPickPhoneCallContact);       
         pickPhoneCallButton.setOnClickListener(new View.OnClickListener() {
@@ -49,7 +47,7 @@ public final class SosSettingActivity extends Activity {
 //				phoneCall  =true;
 //				phonesms  =false;
 				Intent intent = new Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI);
-                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+//                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
         		startActivityForResult(intent, PICK_CONTACT_REQUEST);
         		
 
