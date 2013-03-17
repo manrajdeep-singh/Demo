@@ -26,7 +26,6 @@ public final class SosSettingActivity extends Activity {
 	private boolean phonesms = false;
 	private ListView listview;
 	private ArrayAdapter<Contact> adapter;
-	private CustomContactArrayAdapter listAdapter; 
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -43,7 +42,6 @@ public final class SosSettingActivity extends Activity {
         listview = (ListView)findViewById(R.id.selectedContactList); 
      // Set our custom array adapter as the ListView's adapter.
         adapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, values);
-       
 //        adapter = new ArrayAdapter<Contact>(this,R.id.selectedPhoneContactEntryText, values);
         listview.setAdapter(adapter);				
         
