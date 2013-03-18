@@ -4,11 +4,18 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.course.project.sos.domain.Contact;
 import android.course.project.sos.utility.DatabaseHelper;
 import android.course.project.sos.utility.MorseCodeConverter;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
@@ -20,7 +27,8 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.Toast;
 
-public class AlertActivity extends Activity{
+
+public class AlertActivity extends Activity implements LocationListener{
 
 	// TODO: Create background process for 
 	// 		 sending SMS, Phone Call and Email
@@ -29,12 +37,28 @@ public class AlertActivity extends Activity{
 	private GridLayout main_view;
 	private ToneGenerator audioToPlay;
 	private DatabaseHelper dbHelper;
+	private LocationManager locationManager;
+	private String provider = null;
+	private int lat;
+	private int lng;
+	private StringBuilder strloc;
+	private Location geoloc;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flash_sos);
+		
+		// get location
+		Location loc = this.getLocation();
+		strloc = new StringBuilder();
+		if (loc != null)
+			strloc.append("geo: "+loc.getLatitude() + ","+ loc.getLongitude());
+		
 		dbHelper=new DatabaseHelper(this);
+		
+		sendEmailAlert();
+		sendSMSAlert();
 		
 		  main_view = (GridLayout)findViewById(R.id.sos_flash_background);
 		  
@@ -65,6 +89,30 @@ public class AlertActivity extends Activity{
 	        
 	}
 	
+	 public Location getLocation() {
+	        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	      
+	        if(provider  == null) {
+	        	 Criteria criteria = createCriteria();
+	             provider = locationManager.getBestProvider(criteria, true);
+	        }
+	        locationManager.requestLocationUpdates(provider, 0, 0, this);
+	        geoloc = locationManager.getLastKnownLocation(provider);
+	        
+	        return geoloc;
+	    }
+	    
+	    private Criteria createCriteria() {
+	        Criteria criteria = new Criteria();
+	        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+	        criteria.setPowerRequirement(Criteria.POWER_LOW);
+	        criteria.setAltitudeRequired(false);
+	        criteria.setBearingRequired(false);
+	        criteria.setSpeedRequired(false);
+	        criteria.setCostAllowed(false);
+	        return criteria;
+	    }
+	
 	private void sendSMSAlert(){
 		List<Contact> contacts = dbHelper.getAllPhoneSMSContacts();
 		StringBuffer str = new StringBuffer();
@@ -74,18 +122,18 @@ public class AlertActivity extends Activity{
 		}	
 		PendingIntent pi = PendingIntent.getActivity(this, 0,new Intent(this, AlertActivity.class), 0);                
 		SmsManager sms = SmsManager.getDefault();
-		sms.sendTextMessage(str.toString(), null, getResources().getString(R.string.alert_message), null, null);   
+		sms.sendTextMessage(str.toString(), null, getResources().getString(R.string.alert_message) + strloc.toString(), null, null);   
 	}
 	
-	private void sendPhoneCallAlert(){
-		List<Contact> contacts = dbHelper.getAllPhoneCallContacts();
-		for (Contact contact: contacts){
-			Intent intent = new Intent(Intent.ACTION_CALL);
-	    	intent.setData(Uri.parse("tel:"+contact.getPhoneNumber()));
-	    	startActivity(intent);
-
-		}
-	}
+//	private void sendPhoneCallAlert(){
+//		List<Contact> contacts = dbHelper.getAllPhoneCallContacts();
+//		for (Contact contact: contacts){
+//			Intent intent = new Intent(Intent.ACTION_CALL);
+//	    	intent.setData(Uri.parse("tel:"+contact.getPhoneNumber()));
+//	    	startActivity(intent);
+//
+//		}
+//	}
 	
 	private void sendEmailAlert(){
 		List<Contact> contacts = dbHelper.getAllEmailContacts();
@@ -96,12 +144,13 @@ public class AlertActivity extends Activity{
 		}
 		try {
             Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
-            String emailRecipient[] = new String[] {str.toString()};
+            String emailRecipient[] = new String[] {"manrajdeep@gmail.com"};
             emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, emailRecipient);
             emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.alert_subject));
             emailIntent.setType("plain/text");
-            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.alert_message));
-            startActivity(emailIntent);
+            emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.alert_message) + strloc.toString());
+//            startActivity(emailIntent);
+            startActivity(Intent.createChooser(emailIntent, "Send your email in:"));  
         } catch (Exception e) {
             Toast.makeText(this, "Error Sending Email", Toast.LENGTH_LONG).show();
         }
@@ -128,4 +177,40 @@ public class AlertActivity extends Activity{
             }
         }
     }
+    
+    /* Request updates at startup */
+    @Override
+    protected void onResume() {
+      super.onResume();
+      locationManager.requestLocationUpdates(provider, 2000, 1, this);
+    }
+    
+    @Override
+    protected void onPause() {
+      super.onPause();
+      locationManager.removeUpdates(this); 
+    }
+    
+	public void onLocationChanged(Location location) {
+		geoloc = location;
+		lat = (int) (location.getLatitude());
+	    lng = (int) (location.getLongitude());
+
+	}
+
+	public void onProviderDisabled(String provider) {
+		Toast.makeText( this, "Gps Disabled", Toast.LENGTH_SHORT ).show();
+		
+	}
+
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
