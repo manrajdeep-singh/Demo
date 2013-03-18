@@ -5,7 +5,11 @@
     <string name="contact_manager">All Contacts</string>
     <string name="sos_setting">Configuration</string>
     <string name="alert_manager">Alert Manager</string>
-    <color name="white">#FFFFFF</color>
+    <string name="setting_sms_contact">SMS Contact(s)</string>
+    <string name="setting_email_contact">Email Contact(s)</string>
+    <string name="button_sms_contact">Pick SMS Contact(s)</string>
+    <string name="button_email_contact">Pick Email Contact(s)</string>
+    <color  name="white">#FFFFFF</color>
     <string name="alert_subject">SOS...</string>
     <string name="alert_message">SOS Message</string>
     

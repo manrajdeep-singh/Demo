@@ -21,16 +21,16 @@ public final class SosSettingActivity extends Activity {
 	private HashMap<String,Contact> selectedContact;
 	static final int PICK_CONTACT_REQUEST = 1;  // The request code
 	private DatabaseHelper dbHelper;
-	private ListView phoneCallListview;
+	private ListView emailListview;
 	private ListView phoneSMSListview;
 	
-	private ArrayAdapter<Contact> phoneCallAdapter;
 	private ArrayAdapter<Contact> phoneSMSAdapter;
+	private ArrayAdapter<Contact> emailAdapter;
 
 	// TODO Find better way to handle boolean settings
 	private boolean sendEmail = false;
 	private boolean phoneCall = false;
-	private boolean phonesms = false;
+	private boolean phoneSms = false;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState)
@@ -44,35 +44,35 @@ public final class SosSettingActivity extends Activity {
 //        List<Contact> values = dbHelper.getAllContacts();
 
         // handles Phone Call Selected contact UI
-        phoneCallListview = (ListView)findViewById(R.id.selectedContactList); 
-     // Set our custom array adapter as the ListView's adapter.
-        phoneCallAdapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, dbHelper.getAllPhoneCallContacts());
-        phoneCallListview.setAdapter(phoneCallAdapter);				
-      
-        // handles Phone Call Selected contact UI
-        phoneSMSListview = (ListView)findViewById(R.id.selectedSMSContactList); 
+        phoneSMSListview = (ListView)findViewById(R.id.selectedContactList); 
      // Set our custom array adapter as the ListView's adapter.
         phoneSMSAdapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, dbHelper.getAllPhoneSMSContacts());
         phoneSMSListview.setAdapter(phoneSMSAdapter);				
       
+        // handles Phone Call Selected contact UI
+        emailListview = (ListView)findViewById(R.id.selectedSMSContactList); 
+     // Set our custom array adapter as the ListView's adapter.
+        emailAdapter = new CustomContactArrayAdapter(this,R.layout.selected_phone_contact,R.id.selectedPhoneContactEntryText, dbHelper.getAllEmailContacts());
+        emailListview.setAdapter(emailAdapter);				
+      
         
-        Button pickPhoneCallButton = (Button) findViewById(R.id.btnPickPhoneCallContact);       
+        Button pickPhoneCallButton = (Button) findViewById(R.id.btnPickSMSContact);       
         pickPhoneCallButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View view){
-				phoneCall = true;
-				phonesms  = false;
+				phoneCall = false;
+				phoneSms  = true;
 				sendEmail = false;
 				initiatePickContact();
         	}
         });
         
-        Button pickSmsButton = (Button) findViewById(R.id.btnPickSMSContact);       
+        Button pickSmsButton = (Button) findViewById(R.id.btnPickEmailContact);       
         pickSmsButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View view){
 				phoneCall = false;
-				phonesms  = true;
-				sendEmail = false;
+				phoneSms  = false;
+				sendEmail = true;
 				initiatePickContact();
         	}
         });
@@ -124,7 +124,7 @@ public final class SosSettingActivity extends Activity {
 		            
 		            // TODO Find better way to set boolean flags (based on button click)
 		            selected.setPhone(phoneCall);
-		            selected.setSms(phonesms);
+		            selected.setSms(phoneSms);
 		            selected.setEmail(sendEmail);
 		            
 		            dbHelper.addContact(selected);
@@ -134,7 +134,8 @@ public final class SosSettingActivity extends Activity {
 			
 			break;
 		}
-		phoneCallAdapter.notifyDataSetChanged();
+		phoneSMSAdapter.notifyDataSetChanged();
+		emailAdapter.notifyDataSetChanged();
 	}
 	
 	private void initiatePickContact(){
