@@ -1,7 +1,6 @@
 package android.course.project.sos;
 
 import java.util.HashMap;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;

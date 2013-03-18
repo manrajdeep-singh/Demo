@@ -3,22 +3,18 @@ package android.course.project.sos;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.course.project.sos.domain.Contact;
 import android.course.project.sos.utility.DatabaseHelper;
 import android.course.project.sos.utility.MorseCodeConverter;
 import android.graphics.Color;
-import android.location.Address;
 import android.location.Criteria;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.SmsManager;
@@ -120,7 +116,6 @@ public class AlertActivity extends Activity implements LocationListener{
 			str.append(contact.getPhoneNumber());
 			str.append(";");
 		}	
-		PendingIntent pi = PendingIntent.getActivity(this, 0,new Intent(this, AlertActivity.class), 0);                
 		SmsManager sms = SmsManager.getDefault();
 		sms.sendTextMessage(str.toString(), null, getResources().getString(R.string.alert_message) + strloc.toString(), null, null);   
 	}
