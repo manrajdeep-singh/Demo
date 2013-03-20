@@ -135,7 +135,7 @@ public class AlertActivity extends Activity implements LocationListener{
 		StringBuffer str = new StringBuffer();
 		for (Contact contact: contacts){
 			str.append(contact.getEmail());
-			str.append(";");
+			str.append(",");
 		}
 		try {
             Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -144,8 +144,8 @@ public class AlertActivity extends Activity implements LocationListener{
             emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.alert_subject));
             emailIntent.setType("plain/text");
             emailIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.alert_message) + strloc.toString());
-//            startActivity(emailIntent);
-            startActivity(Intent.createChooser(emailIntent, "Send your email in:"));  
+            startActivity(emailIntent);
+//            startActivity(Intent.createChooser(emailIntent, "Send your email in:"));  
         } catch (Exception e) {
             Toast.makeText(this, "Error Sending Email", Toast.LENGTH_LONG).show();
         }
